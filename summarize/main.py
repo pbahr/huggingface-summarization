@@ -1,5 +1,7 @@
 import click
 from transformers import pipeline
+# Added to fix an issue with t5 config
+from transformers import AutoConfig
 import urllib.request
 from bs4 import BeautifulSoup
 
@@ -25,7 +27,10 @@ def extract_from_url(url):
 
 
 def process(text):
-    summarizer = pipeline("summarization", model="t5-small")
+    # added the next two lines to fix an issue with t5 config
+    config = AutoConfig.from_pretrained('t5-small')
+    # end of add
+    summarizer = pipeline("summarization", model="t5-small", config= config)
     result = summarizer(text, max_length=180)
     click.echo("Summarization process complete!")
     click.echo("=" * 80)
